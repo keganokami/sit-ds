@@ -209,6 +209,25 @@ services:
       - arm_data:/var/opt/jfrog/artifactory
     restart: always
 
+  # arm_2:
+  #   image: sonatype/nexus3:${VERSION_ARM_2}
+  #   depends_on:
+  #     - ldap
+  #     - dbms
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     TZ: ${OS_TIMEZONE}
+  #     DB_TYPE: postgresql
+  #     DB_URL: ${DB_JDBC_URL}/nexus
+  #     DB_USER: nexus
+  #     DB_PASSWORD: nexus
+  #   volumes:
+  #     - arm_2_data:/var/opt/nexus
+  #   ports:
+  #     - 8081:8081
+  #   restart: always
+
   proxy:
     build:
       context: ./service/nginx
@@ -226,6 +245,7 @@ services:
     ports:
       - ${PROXY_PORT}:${PROXY_PORT}
     restart: always
+    platform: linux/arm64
 
   work:
     build:
@@ -240,19 +260,19 @@ services:
       - ./service/work/mount:/mnt
     restart: always
 
-  e2etest:
-    build:
-      context: ./e2etest
-      args:
-        VERSION: ${VERSION_UBUNTU}
-    env_file:
-      - .env
-    environment:
-        TZ: ${OS_TIMEZONE}
-    volumes:
-      - ./e2etest:/mnt
-    working_dir: /mnt
-    restart: always
+  # e2etest:
+  #   build:
+  #     context: ./e2etest
+  #     args:
+  #       VERSION: ${VERSION_UBUNTU}
+  #   env_file:
+  #     - .env
+  #   environment:
+  #       TZ: ${OS_TIMEZONE}
+  #   volumes:
+  #     - ./e2etest:/mnt
+  #   working_dir: /mnt
+  #   restart: always
 
   wiki:
     env_file:
@@ -293,5 +313,6 @@ volumes:
   sca_data:
   scm_data:
   arm_data:
+  arm_2_data:
   wiki_data:
   search_engine_data:
