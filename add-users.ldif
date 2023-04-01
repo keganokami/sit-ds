@@ -1,0 +1,10 @@
+dn: cn=user001,dc=example,dc=org
+changetype: add
+cn: user001
+sn: User
+givenName: 001
+mail: user001@exapmle.org
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: top
+userPassword: password
