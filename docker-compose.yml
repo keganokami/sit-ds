@@ -217,13 +217,22 @@ services:
     env_file:
       - .env
     environment:
-      TZ: ${OS_TIMEZONE}
-      DB_TYPE: postgresql
-      DB_URL: ${DB_JDBC_URL}/nexus
-      DB_USER: nexus
-      DB_PASSWORD: nexus
+      LDAP_ENABLED: "true"
+      LDAP_HOST: ${LDAP_HOST}
+      LDAP_BIND_DN: ${LDAP_MANAGER_DN}
+      LDAP_BASE: ${LDAP_ROOT_DN}
+      LDAP_UID: ${LDAP_LOGIN_ATTRIBUTE}
+      LDAP_USER_ATTRIBUTE_USERNAME: ${LDAP_FULLNAME_ATTRIBUTE}
+      LDAP_USER_ATTRIBUTE_MAIL: ${LDAP_MAIL_ATTRIBUTE}
+      LDAP_PASS: ${LDAP_MANAGER_PASSWORD}
+      NEXUS_DATASTORE_NEXUS_JDBCURL: ${DB_JDBC_URL}/nexus
+      NEXUS_DATASTORE_NEXUS_USERNAME: nexus
+      NEXUS_DATASTORE_NEXUS_PASSWORD: nexus
+
     volumes:
       - arm_2_data:/var/opt/nexus
+      - ./service/nexus/etc:/nexus-data/etc
+      - ./service/nexus/etc/fabric:/nexus-data/etc/fabric
     ports:
       - 8081:8081
     restart: always
@@ -260,19 +269,19 @@ services:
       - ./service/work/mount:/mnt
     restart: always
 
-  # e2etest:
-  #   build:
-  #     context: ./e2etest
-  #     args:
-  #       VERSION: ${VERSION_UBUNTU}
-  #   env_file:
-  #     - .env
-  #   environment:
-  #       TZ: ${OS_TIMEZONE}
-  #   volumes:
-  #     - ./e2etest:/mnt
-  #   working_dir: /mnt
-  #   restart: always
+  e2etest:
+    build:
+      context: ./e2etest
+      args:
+        VERSION: ${VERSION_UBUNTU}
+    env_file:
+      - .env
+    environment:
+        TZ: ${OS_TIMEZONE}
+    volumes:
+      - ./e2etest:/mnt
+    working_dir: /mnt
+    restart: always
 
   wiki:
     env_file:
